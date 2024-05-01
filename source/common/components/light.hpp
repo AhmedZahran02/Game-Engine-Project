@@ -13,8 +13,6 @@ namespace our
         int lightType;
         glm::vec3 direction;
         glm::vec3 color;
-        glm::vec3 diffuseColor;
-        glm::vec3 specularColor;
         glm::vec3 attenuation;
         glm::vec2 coneAngles;
         float intensity;

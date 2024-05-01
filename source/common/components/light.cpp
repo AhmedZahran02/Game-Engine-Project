@@ -14,6 +14,6 @@ namespace our
         color = data.value("color", glm::vec3(1, 1, 1));
         attenuation = data.value("attenuation", glm::vec3(1, 1, 1));
         coneAngles = data.value("coneAngles", glm::vec2(0, 0));
-        intensity = data.value("intensity", 1.0);
+        intensity = (float)data.value("intensity", 1.0);
     }
 }

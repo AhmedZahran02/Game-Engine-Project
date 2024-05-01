@@ -26,7 +26,7 @@ for meshName in meshes:
             ]
           }
     child["components"][0]["mesh"]=meshName
-    child["components"][0]["material"]=meshName.split('-')[-1]
+    child["components"][0]["material"]=meshName.split('-')[-2] +"-"+ meshName.split('-')[-1]
     entity["children"].append(child)
 
 world.append(entity)         

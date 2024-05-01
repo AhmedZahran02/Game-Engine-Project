@@ -1,0 +1,647 @@
+{
+  "start-scene": "loading-screen",
+  "window": {
+    "title": "Default Game Window",
+    "size": {
+      "width": 1280,
+      "height": 720
+    },
+    "fullscreen": false
+  },
+  "scene": {
+    "renderer": {
+      "sky": "assets/textures/sky.jpg",
+      "postprocess": "assets/shaders/postprocess/vignette.frag"
+    },
+    "assets": {
+      "shaders": {
+        "ball_test": {
+          "vs": "assets/shaders/ball.vert",
+          "fs": "assets/shaders/textured.frag"
+        },
+        "tinted": {
+          "vs": "assets/shaders/tinted.vert",
+          "fs": "assets/shaders/tinted.frag"
+        },
+        "textured": {
+          "vs": "assets/shaders/textured.vert",
+          "fs": "assets/shaders/textured.frag"
+        },
+        "lit": {
+          "vs": "assets/shaders/lit.vert",
+          "fs": "assets/shaders/lit.frag"
+        },
+        "lit-texture": {
+          "vs": "assets/shaders/lit-texture.vert",
+          "fs": "assets/shaders/lit-texture.frag"
+        }
+      },
+      "textures": {
+        "field1": "assets/textures/field1.png",
+        "field2": "assets/textures/field2.png"
+      },
+      "meshes": {
+        "cube": "assets/models/cube.obj",
+        "field-1-field-mat1": "assets/models/field-1-field-mat1.obj",
+        "field-10-field-mat10": "assets/models/field-10-field-mat10.obj",
+        "field-11-field-mat11": "assets/models/field-11-field-mat11.obj",
+        "field-12-field-mat12": "assets/models/field-12-field-mat12.obj",
+        "field-13-field-mat13": "assets/models/field-13-field-mat13.obj",
+        "field-14-field-mat14": "assets/models/field-14-field-mat14.obj",
+        "field-15-field-mat15": "assets/models/field-15-field-mat15.obj",
+        "field-16-field-mat16": "assets/models/field-16-field-mat16.obj",
+        "field-17-field-mat17": "assets/models/field-17-field-mat17.obj",
+        "field-2-field-mat2": "assets/models/field-2-field-mat2.obj",
+        "field-3-field-mat3": "assets/models/field-3-field-mat3.obj",
+        "field-4-field-mat4": "assets/models/field-4-field-mat4.obj",
+        "field-5-field-mat5": "assets/models/field-5-field-mat5.obj",
+        "field-6-field-mat6": "assets/models/field-6-field-mat6.obj",
+        "field-7-field-mat7": "assets/models/field-7-field-mat7.obj",
+        "field-8-field-mat8": "assets/models/field-8-field-mat8.obj",
+        "field-9-field-mat9": "assets/models/field-9-field-mat9.obj"
+      },
+      "samplers": {
+        "default": {},
+        "pixelated": {
+          "MAG_FILTER": "GL_NEAREST"
+        }
+      },
+      "materials": {
+        "metal": {
+          "type": "tinted",
+          "shader": "tinted",
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "tint": [0.45, 0.4, 0.5, 1]
+        },
+        "field-mat1": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.0578023, 0.054478, 0.054478],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat2": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.0578023, 0.054478, 0.054478],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat3": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.0239761, 0.984196, 0.232482],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat4": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [1.0, 1.0, 1.0],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat5": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [1.0, 1.0, 1.0],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "litTextured",
+          "shader": "lit-texture",
+          "texture": "field1",
+          "sampler": "default"
+        },
+        "field-mat6": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [1.0, 1.0, 1.0],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "litTextured",
+          "shader": "lit-texture",
+          "texture": "field2",
+          "sampler": "default"
+        },
+        "field-mat7": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.00392157, 0.0784314, 0.027451],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat8": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.00392157, 0.0784314, 0.027451],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat9": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.00392157, 0.0784314, 0.027451],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat10": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.00392157, 0.0784314, 0.027451],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat11": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.00392157, 0.0784314, 0.027451],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat12": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.00392157, 0.0784314, 0.027451],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat13": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.121569, 0.121569, 0.121569],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat14": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.00392157, 0.0784314, 0.027451],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat15": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.121569, 0.121569, 0.121569],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat16": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.901961, 0.901961, 0.901961],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        },
+        "field-mat17": {
+          "pipelineState": {
+            "faceCulling": {
+              "enabled": false
+            },
+            "depthTesting": {
+              "enabled": true
+            }
+          },
+          "ambient": [0, 0, 0],
+          "diffuse": [0.901961, 0.901961, 0.901961],
+          "specular": [0, 0, 0],
+          "emission": [0.0, 0.0, 0.0],
+          "roughness": 1,
+          "SpecularExponent": 1,
+          "refractionFactor": 1,
+          "dissolveFactor": 1.0,
+          "illumModel": 2.0,
+          "type": "lit",
+          "shader": "lit"
+        }
+      }
+    },
+    "world": [
+      {
+        "position": [0, 0, 10],
+        "components": [
+          {
+            "type": "Camera"
+          },
+          {
+            "type": "Free Camera Controller"
+          }
+        ],
+        "children": [
+          {
+            "position": [1, -1, -1],
+            "rotation": [45, 45, 0],
+            "scale": [0.1, 0.1, 1.0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "cube",
+                "material": "metal"
+              }
+            ],
+            "children": [
+              {
+                "components": [
+                  {
+                    "type": "Light",
+                    "lightType": 2,
+                    "direction": [0, 0, 1],
+                    "color": [1, 1, 1],
+                    "attenuation": [0.05, 0.05, 0.05],
+                    "coneAngles": [15, 30]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "position": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "children": [
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-1-field-mat1",
+                "material": "field-mat1"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-10-field-mat10",
+                "material": "field-mat10"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-11-field-mat11",
+                "material": "field-mat11"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-12-field-mat12",
+                "material": "field-mat12"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-13-field-mat13",
+                "material": "field-mat13"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-14-field-mat14",
+                "material": "field-mat14"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-15-field-mat15",
+                "material": "field-mat15"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-16-field-mat16",
+                "material": "field-mat16"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-17-field-mat17",
+                "material": "field-mat17"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-2-field-mat2",
+                "material": "field-mat2"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-3-field-mat3",
+                "material": "field-mat3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-4-field-mat4",
+                "material": "field-mat4"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-5-field-mat5",
+                "material": "field-mat5"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-6-field-mat6",
+                "material": "field-mat6"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-7-field-mat7",
+                "material": "field-mat7"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-8-field-mat8",
+                "material": "field-mat8"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "field-9-field-mat9",
+                "material": "field-mat9"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

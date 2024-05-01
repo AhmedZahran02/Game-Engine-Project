@@ -1,4 +1,11 @@
 import json
+import sys
+
+if len(sys.argv) <= 1:
+   print("argument missing need model name")
+   exit(-1)
+
+model_name = sys.argv[1]
 
 def createLitMaterial (template,ambient,diffuse,specular,emission,roughness,SpecularExponent,refractionFactor,dissolveFactor,illumModel):
   newTemplate = template.copy()
@@ -43,7 +50,29 @@ mat = {
           }
         }
 
-with open('material.lib', 'r') as f:
+data_line = open("material.lib","r+",encoding="ISO-8859-1")
+data_line = data_line.readlines()
+
+with open("material.lib_new","w+") as new_file:
+  new_file.write("")
+  cnt = 1
+  cnt2= 1
+  for i in range(0,len(data_line)):
+    line = data_line[i]
+    words = line.split()
+    if len(words) > 0 and words[0] == "newmtl":
+      new_file.write("\n")
+      new_file.write("newmtl " + model_name + "-mat" + str(cnt) + "\n")
+      cnt+=1
+    elif len(words) > 0 and words[0] == "map_Kd":
+      new_file.write("map_Kd " + model_name + str(cnt2) + ".png" + "\n")
+      cnt2+=1
+    else:
+      new_file.write(line)
+  new_file.write("\n")
+
+
+with open('material.lib_new', 'r', encoding="ISO-8859-1") as f:
     materialLoaded =False
     materialName =''
     ambient = [0,0,0]  # Ka
@@ -98,4 +127,3 @@ data["scene"]["assets"]["textures"] = textures
 
 with open('app.jsonc', 'w') as f:
     json.dump(data, f, indent=4)
-

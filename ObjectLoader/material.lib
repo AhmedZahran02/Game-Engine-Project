@@ -1,0 +1,144 @@
+# Aspose.3D Wavefront OBJ Exporter
+# Copyright 2004-2024 Aspose Pty Ltd.
+# File created: 05/01/2024 23:05:37
+
+newmtl Black
+	illum 2
+	Kd 0.0578023 0.054478 0.054478
+	Ke 0 0 0
+	Pr 0.9883298
+	Pm 0
+	d 1
+	Tr 0
+newmtl Black
+	illum 2
+	Kd 0.0578023 0.054478 0.054478
+	Ke 0 0 0
+	Pr 0.9883298
+	Pm 0
+	d 1
+	Tr 0
+newmtl Glasss
+	illum 2
+	Kd 0.0239761 0.984196 0.232482
+	Ke 0 0 0
+	Pr 0.9136898
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.stoq
+	illum 2
+	Kd 1 1 1
+	Ke 0 0 0
+	Pr 0.78852576
+	Pm 0
+	d 1
+	Tr 0
+newmtl Grass
+	illum 2
+	Kd 1 1 1
+	Ke 0 0 0
+	Pr 1
+	Pm 0
+	d 1
+	Tr 0
+	map_Kd texture_1.jpg
+	map_Pr texture_2.png
+	map_Pm texture_2.png
+newmtl StoneTile
+	illum 2
+	Kd 1 1 1
+	Ke 0 0 0
+	Pr 0.82111454
+	Pm 0
+	d 1
+	Tr 0
+	map_Kd texture_3.jpg
+newmtl CRN.setka1
+	illum 2
+	Kd 0.00392157 0.0784314 0.027451
+	Ke 0 0 0
+	Pr 0.9875421
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.setka1
+	illum 2
+	Kd 0.00392157 0.0784314 0.027451
+	Ke 0 0 0
+	Pr 0.9875421
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.setka1
+	illum 2
+	Kd 0.00392157 0.0784314 0.027451
+	Ke 0 0 0
+	Pr 0.9875421
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.setka1
+	illum 2
+	Kd 0.00392157 0.0784314 0.027451
+	Ke 0 0 0
+	Pr 0.9875421
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.setka1
+	illum 2
+	Kd 0.00392157 0.0784314 0.027451
+	Ke 0 0 0
+	Pr 0.9875421
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.setka1
+	illum 2
+	Kd 0.00392157 0.0784314 0.027451
+	Ke 0 0 0
+	Pr 0.9875421
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.Material_1737
+	illum 2
+	Kd 0.121569 0.121569 0.121569
+	Ke 0 0 0
+	Pr 0.97429127
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.setka1
+	illum 2
+	Kd 0.00392157 0.0784314 0.027451
+	Ke 0 0 0
+	Pr 0.9875421
+	Pm 0
+	d 1
+	Tr 0
+newmtl CRN.Material_1737
+	illum 2
+	Kd 0.121569 0.121569 0.121569
+	Ke 0 0 0
+	Pr 0.97429127
+	Pm 0
+	d 1
+	Tr 0
+newmtl White
+	illum 2
+	Kd 0.901961 0.901961 0.901961
+	Ke 0 0 0
+	Pr 0.7854763
+	Pm 0
+	d 1
+	Tr 0
+newmtl White
+	illum 2
+	Kd 0.901961 0.901961 0.901961
+	Ke 0 0 0
+	Pr 0.7854763
+	Pm 0
+	d 1
+	Tr 0
