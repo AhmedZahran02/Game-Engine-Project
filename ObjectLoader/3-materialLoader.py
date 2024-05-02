@@ -56,7 +56,6 @@ data_line = data_line.readlines()
 with open("material.lib_new","w+") as new_file:
   new_file.write("")
   cnt = 1
-  cnt2= 1
   for i in range(0,len(data_line)):
     line = data_line[i]
     words = line.split()
@@ -64,9 +63,6 @@ with open("material.lib_new","w+") as new_file:
       new_file.write("\n")
       new_file.write("newmtl " + model_name + "-mat" + str(cnt) + "\n")
       cnt+=1
-    elif len(words) > 0 and words[0] == "map_Kd":
-      new_file.write("map_Kd " + model_name + str(cnt2) + ".png" + "\n")
-      cnt2+=1
     else:
       new_file.write(line)
   new_file.write("\n")
