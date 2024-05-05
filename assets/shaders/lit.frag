@@ -4,7 +4,10 @@
 #define POINT       1
 #define SPOT        2
 
+#define MAX_LIGHTS 20
+
 in Varyings {
+    vec3 position;
     vec4 color;
     vec3 normal;
     vec3 worldPos;
@@ -20,9 +23,8 @@ struct Light{
     vec3 attenuation;
     vec2 coneAngles;
     float intensity;
+    mat4 MVP;
 }light;
-
-#define MAX_LIGHTS 100
 
 uniform Light lights[MAX_LIGHTS];
 uniform int lightCount;
@@ -40,6 +42,24 @@ uniform struct Material {
 } mat;
 
 uniform vec3 cameraPos;
+
+uniform sampler2D tex[10];
+
+float calcShadowFactor (int lightIndex){
+    vec4 lLocation = lights[lightIndex].MVP * vec4(fs_in.position,1.0);
+    vec3 projCoords = lLocation.xyz / lLocation.w;
+    vec2 textureCoords;
+    textureCoords.x = 0.5 * projCoords.x + 0.5;
+    textureCoords.y = 0.5 * projCoords.y + 0.5;
+    float z = 0.5 * projCoords.z + 0.5;
+    float depth = texture(tex[lightIndex + 1],textureCoords).x;
+    float bias = 0.0025;
+
+    if (depth + bias < z && lights[lightIndex].lightType != 0)
+        return 0.5;
+    else 
+        return 1.0;
+}
 
 void main() {
     vec3 viewDir = normalize(cameraPos - fs_in.worldPos);
@@ -79,7 +99,7 @@ void main() {
             specular = light.color * mat.specular * pow(max(0.0, dot(normalize(reflectDir), viewDir)), mat.SpecularExponent) * light.intensity;
         }
 
-        color += ambient + (diffuse + specular) * attenuation;
+        color += ambient + (diffuse + specular) * attenuation * calcShadowFactor(lightIndex + 1);
     }
 
     frag_color = fs_in.color * vec4(color, 1.0);

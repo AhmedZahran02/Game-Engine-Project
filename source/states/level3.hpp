@@ -107,7 +107,7 @@ class Level3state : public our::State
         playerController.enter(getApp());
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
-        renderer.initialize(size, config["renderer"]);
+        renderer.initialize(size, config["renderer"], &world);
 
         soundSystem.playSound("1", "./assets/audio/countdown.mp3");
     }

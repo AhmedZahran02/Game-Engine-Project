@@ -23,11 +23,13 @@ namespace our
         PipelineState pipelineState;
         ShaderProgram *shader;
         bool transparent;
+        std::string samplerName = "tex[0]";
 
         // This function does 2 things: setup the pipeline state and set the shader program to be used
         virtual void setup() const;
         // This function read a material from a json object
         virtual void deserialize(const nlohmann::json &data);
+        void setSamplerName(std::string name);
     };
 
     // This material adds a uniform for a tint (a color that will be sent to the shader)
@@ -52,9 +54,11 @@ namespace our
         Texture2D *texture;
         Sampler *sampler;
         float alphaThreshold;
+        unsigned int textureUnit = 0;
 
         void setup() const override;
         void deserialize(const nlohmann::json &data) override;
+        void setTextureUnit(unsigned int textureUnit);
     };
 
     class LitMaterial : public Material
@@ -79,9 +83,11 @@ namespace our
     public:
         Texture2D *texture;
         Sampler *sampler;
+        unsigned int textureUnit = 0;
 
         void setup() const override;
         void deserialize(const nlohmann::json &data) override;
+        void setTextureUnit(unsigned int textureUnit);
     };
 
     // This function returns a new material instance based on the given type

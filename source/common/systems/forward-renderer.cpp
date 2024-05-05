@@ -10,11 +10,79 @@
 
 namespace our
 {
+    glm::mat4 ForwardRenderer::getVPLightSource(LightComponent *lightComponent)
+    {
+        glm::vec3 center = glm::normalize(lightComponent->getOwner()->getLocalToWorldMatrix() * glm::vec4(lightComponent->getOwner()->localTransform.position, 1.0));
+        glm::vec3 lookAt = glm::normalize(lightComponent->direction);
+        glm::vec3 up = glm::vec4(0., 1., 0., 0.);
+        glm::mat4 viewMatrix = glm::lookAt(center, lookAt, up);
 
-    void ForwardRenderer::initialize(glm::ivec2 windowSize, const nlohmann::json &config)
+        float near = 0.01f;
+        float far = 100.0f;
+        float fovY = 90.0f * (glm::pi<float>() / 180);
+        float orthoHeight = 1.0f;
+
+        float aspectRatio = (float)windowSize.x / windowSize.y;
+        float width = orthoHeight * aspectRatio;
+        float x = width / 2.0f;
+        float y = orthoHeight / 2.0f;
+
+        glm::mat4 projectionMatrix = glm::perspective(fovY, aspectRatio, near, far);
+        return projectionMatrix * viewMatrix;
+    }
+
+    void ForwardRenderer::initialize(glm::ivec2 windowSize, const nlohmann::json &config, World *world, unsigned int shadowMapWidth, unsigned int shadowMapHeight)
     {
         // First, we store the window size for later use
         this->windowSize = windowSize;
+        this->shadowMapWidth = shadowMapWidth;
+        this->shadowMapHeight = shadowMapHeight;
+
+        // Then we check if there is a shadow shader in the configuration
+        if (config.contains("shadow"))
+        {
+            shadowEnabled = true;
+            int index = 0;
+            for (auto entity : world->getEntities())
+            {
+                if (auto lightSource = entity->getComponent<LightComponent>(); lightSource)
+                {
+                    unsigned int shadowbuffer;
+                    glGenFramebuffers(1, &shadowbuffer);
+                    glBindFramebuffer(GL_FRAMEBUFFER, shadowbuffer);
+
+                    Texture2D *shadowMap = texture_utils::empty(GL_DEPTH_COMPONENT16, glm::vec2(shadowMapWidth, shadowMapHeight));
+                    // Create a sampler to use for sampling the scene texture in the shadow shader
+                    Sampler *shadowSampler = new Sampler();
+                    shadowSampler->set(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    shadowSampler->set(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                    shadowSampler->set(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                    shadowSampler->set(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMap->getOpenGLName(), 0);
+                    glDrawBuffer(GL_NONE);
+                    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                        exit(-200);
+
+                    // Create the shadow shader
+                    ShaderProgram *shadowShader = new ShaderProgram();
+                    shadowShader->attach("assets/shaders/shadow.vert", GL_VERTEX_SHADER);
+                    shadowShader->attach("assets/shaders/shadow.frag", GL_FRAGMENT_SHADER);
+                    shadowShader->link();
+
+                    // Create a post processing material
+                    TexturedMaterial *shadowMaterial = new TexturedMaterial();
+                    shadowMaterial->shader = shadowShader;
+                    shadowMaterial->texture = shadowMap;
+                    shadowMaterial->sampler = shadowSampler;
+                    shadowMaterial->setTextureUnit(index + 1);
+                    shadowMaterial->setSamplerName("tex[" + std::to_string(index + 1) + "]");
+                    shadowFrameBuffers.push_back(shadowbuffer);
+                    shadowMaterials.push_back(shadowMaterial);
+
+                    index++;
+                }
+            }
+        }
 
         // Then we check if there is a sky texture in the configuration
         if (config.contains("sky"))
@@ -122,10 +190,85 @@ namespace our
             delete postprocessMaterial->shader;
             delete postprocessMaterial;
         }
+
+        if (shadowMaterials.size())
+        {
+            for (unsigned int i = 0; i < shadowMaterials.size(); i++)
+            {
+                glDeleteFramebuffers(1, &shadowFrameBuffers[i]);
+                delete shadowMaterials[i]->sampler;
+                delete shadowMaterials[i]->shader;
+                delete shadowMaterials[i];
+            }
+        }
     }
 
     void ForwardRenderer::render(World *world)
     {
+        // render shadows
+        if (shadowEnabled)
+        {
+            for (unsigned int i = 0; i < shadowFrameBuffers.size(); i++)
+            {
+                glBindFramebuffer(GL_FRAMEBUFFER, shadowFrameBuffers[0]);
+                opaqueCommands.clear();
+                transparentCommands.clear();
+                lightsSources.clear();
+                for (auto entity : world->getEntities())
+                {
+                    if (auto meshRenderer = entity->getComponent<MeshRendererComponent>(); meshRenderer)
+                    {
+                        // We construct a command from it
+                        RenderCommand command;
+                        command.localToWorld = meshRenderer->getOwner()->getLocalToWorldMatrix();
+                        command.center = glm::vec3(command.localToWorld * glm::vec4(0, 0, 0, 1));
+                        command.mesh = meshRenderer->mesh;
+                        command.material = meshRenderer->material;
+
+                        if (command.material->transparent)
+                        {
+                            transparentCommands.push_back(command);
+                        }
+                        else
+                        {
+                            // Otherwise, we add it to the opaque command list
+                            opaqueCommands.push_back(command);
+                        }
+                    }
+
+                    if (auto lightSource = entity->getComponent<LightComponent>(); lightSource)
+                    {
+                        lightsSources.push_back(lightSource);
+                    }
+                }
+
+                glViewport(0, 0, this->shadowMapWidth, this->shadowMapHeight);
+                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                glClearDepth(1.0);
+                glColorMask(1, 1, 1, 1);
+                glDepthMask(1);
+
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                glm::mat4 view_projection = getVPLightSource(lightsSources[i]);
+
+                for (our::RenderCommand &command : opaqueCommands)
+                {
+                    command.material->setup();
+                    command.material->shader->set("transform", view_projection * command.localToWorld);
+                    command.mesh->draw();
+                }
+                for (our::RenderCommand &command : transparentCommands)
+                {
+                    command.material->setup();
+                    command.material->shader->set("transform", view_projection * command.localToWorld);
+                    command.mesh->draw();
+                }
+
+                // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            }
+        }
+
         // First of all, we search for a camera and for all the mesh renderers
 
         CameraComponent *camera = nullptr;
@@ -225,6 +368,10 @@ namespace our
             ballCommand.material->shader->set("M_IT", glm::transpose(glm::inverse(ballCommand.localToWorld)));
             ballCommand.material->shader->set("cameraPos", ballCommand.center);
             int index = 0;
+            if (dynamic_cast<LitTexturedMaterial *>(ballCommand.material))
+                dynamic_cast<LitTexturedMaterial *>(ballCommand.material)->setTextureUnit(index);
+            ballCommand.material->setSamplerName("tex[" + std::to_string(index) + "]");
+            ballCommand.material->setup();
             for (auto it = lightsSources.begin(); it != lightsSources.end(); it++, index++)
             {
                 ballCommand.material->shader->set("lights[" + std::to_string(index) + "].lightType", (*it)->lightType);
@@ -232,6 +379,12 @@ namespace our
                 ballCommand.material->shader->set("lights[" + std::to_string(index) + "].color", (*it)->color);
                 auto lightPosition = glm::vec3((*it)->getOwner()->getLocalToWorldMatrix() * glm::vec4((*it)->getOwner()->localTransform.position, 1.0));
                 ballCommand.material->shader->set("lights[" + std::to_string(index) + "].position", lightPosition);
+                glm::mat4 LMVP = getVPLightSource(lightsSources[index]) * ballCommand.localToWorld;
+                ballCommand.material->shader->set("lights[" + std::to_string(index) + "].MVP", LMVP);
+                if (dynamic_cast<LitTexturedMaterial *>(ballCommand.material))
+                    dynamic_cast<LitTexturedMaterial *>(ballCommand.material)->setTextureUnit(index + 1);
+                // ballCommand.material->setSamplerName("tex[" + std::to_string(index + 1) + "]");
+                ballCommand.material->setup();
                 ballCommand.material->shader->set("lights[" + std::to_string(index) + "].coneAngles", (*it)->coneAngles);
                 ballCommand.material->shader->set("lights[" + std::to_string(index) + "].attenuation", (*it)->attenuation);
                 ballCommand.material->shader->set("lights[" + std::to_string(index) + "].intensity", (*it)->intensity);
@@ -251,6 +404,10 @@ namespace our
                 command.material->shader->set("M_IT", glm::transpose(glm::inverse(command.localToWorld)));
                 command.material->shader->set("cameraPos", command.center);
                 int index = 0;
+                if (dynamic_cast<LitTexturedMaterial *>(command.material))
+                    dynamic_cast<LitTexturedMaterial *>(command.material)->setTextureUnit(index);
+                command.material->setSamplerName("tex[" + std::to_string(index) + "]");
+                command.material->setup();
                 for (auto it = lightsSources.begin(); it != lightsSources.end(); it++, index++)
                 {
                     command.material->shader->set("lights[" + std::to_string(index) + "].lightType", (*it)->lightType);
@@ -258,6 +415,12 @@ namespace our
                     command.material->shader->set("lights[" + std::to_string(index) + "].color", (*it)->color);
                     auto lightPosition = glm::vec3((*it)->getOwner()->getLocalToWorldMatrix() * glm::vec4((*it)->getOwner()->localTransform.position, 1.0));
                     command.material->shader->set("lights[" + std::to_string(index) + "].position", lightPosition);
+                    glm::mat4 LMVP = getVPLightSource(lightsSources[index]) * command.localToWorld;
+                    command.material->shader->set("lights[" + std::to_string(index) + "].MVP", LMVP);
+                    if (dynamic_cast<LitTexturedMaterial *>(command.material))
+                        dynamic_cast<LitTexturedMaterial *>(command.material)->setTextureUnit(index + 1);
+                    // command.material->setSamplerName("tex[" + std::to_string(index + 1) + "]");
+                    command.material->setup();
                     command.material->shader->set("lights[" + std::to_string(index) + "].coneAngles", (*it)->coneAngles);
                     command.material->shader->set("lights[" + std::to_string(index) + "].attenuation", (*it)->attenuation);
                     command.material->shader->set("lights[" + std::to_string(index) + "].intensity", (*it)->intensity);
@@ -298,6 +461,10 @@ namespace our
                 command.material->shader->set("M_IT", glm::transpose(glm::inverse(command.localToWorld)));
                 command.material->shader->set("cameraPos", command.center);
                 int index = 0;
+                if (dynamic_cast<LitTexturedMaterial *>(command.material))
+                    dynamic_cast<LitTexturedMaterial *>(command.material)->setTextureUnit(index);
+                command.material->setSamplerName("tex[" + std::to_string(index) + "]");
+                command.material->setup();
                 for (auto it = lightsSources.begin(); it != lightsSources.end(); it++, index++)
                 {
                     command.material->shader->set("lights[" + std::to_string(index) + "].lightType", (*it)->lightType);
@@ -305,6 +472,12 @@ namespace our
                     command.material->shader->set("lights[" + std::to_string(index) + "].color", (*it)->color);
                     auto lightPosition = glm::vec3((*it)->getOwner()->getLocalToWorldMatrix() * glm::vec4((*it)->getOwner()->localTransform.position, 1.0));
                     command.material->shader->set("lights[" + std::to_string(index) + "].position", lightPosition);
+                    glm::mat4 LMVP = getVPLightSource(lightsSources[index]) * command.localToWorld;
+                    command.material->shader->set("lights[" + std::to_string(index) + "].MVP", LMVP);
+                    if (dynamic_cast<LitTexturedMaterial *>(command.material))
+                        dynamic_cast<LitTexturedMaterial *>(command.material)->setTextureUnit(index + 1);
+                    // command.material->setSamplerName("tex[" + std::to_string(index + 1) + "]");
+                    command.material->setup();
                     command.material->shader->set("lights[" + std::to_string(index) + "].coneAngles", (*it)->coneAngles);
                     command.material->shader->set("lights[" + std::to_string(index) + "].attenuation", (*it)->attenuation);
                     command.material->shader->set("lights[" + std::to_string(index) + "].intensity", (*it)->intensity);

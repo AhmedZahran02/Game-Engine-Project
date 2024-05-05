@@ -30,6 +30,11 @@ namespace our
         transparent = data.value("transparent", false);
     }
 
+    void Material::setSamplerName(std::string name)
+    {
+        this->samplerName = name;
+    }
+
     // This function should call the setup of its parent and
     // set the "tint" uniform to the value in the member variable tint
     void TintedMaterial::setup() const
@@ -56,11 +61,11 @@ namespace our
         // TODO: (Req 7) Write this function
         TintedMaterial::setup();
         shader->set("alphaThreshold", alphaThreshold);
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0 + textureUnit);
         texture->bind();
         if (sampler)
             sampler->bind(0);
-        shader->set("tex", 0);
+        shader->set(samplerName, 0);
     }
 
     // This function read the material data from a json object
@@ -72,6 +77,11 @@ namespace our
         alphaThreshold = data.value("alphaThreshold", 0.0f);
         texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+    }
+
+    void TexturedMaterial::setTextureUnit(unsigned int textureUnit)
+    {
+        this->textureUnit = textureUnit;
     }
 
     void LitMaterial::setup() const
@@ -106,12 +116,18 @@ namespace our
     void LitTexturedMaterial::setup() const
     {
         LitMaterial::setup();
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0 + textureUnit);
         texture->bind();
         if (sampler)
             sampler->bind(0);
-        shader->set("tex", 0);
+        shader->set(samplerName, 0);
     }
+
+    void LitTexturedMaterial::setTextureUnit(unsigned int textureUnit)
+    {
+        this->textureUnit = textureUnit;
+    }
+
     void LitTexturedMaterial::deserialize(const nlohmann::json &data)
     {
         LitMaterial::deserialize(data);

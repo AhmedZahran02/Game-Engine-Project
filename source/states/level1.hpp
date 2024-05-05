@@ -45,7 +45,7 @@ class Level1state : public our::State
         playerController.enter(getApp());
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
-        renderer.initialize(size, config["renderer"]);
+        renderer.initialize(size, config["renderer"], &world);
     }
 
     void onDraw(double deltaTime) override

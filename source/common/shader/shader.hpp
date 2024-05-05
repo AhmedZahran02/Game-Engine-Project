@@ -6,6 +6,7 @@
 #include <glad/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 namespace our
 {
@@ -42,7 +43,12 @@ namespace our
         GLuint getUniformLocation(const std::string &name)
         {
             // TODO: (Req 1) Return the location of the uniform with the given name
-            return glGetUniformLocation(this->program, name.c_str());
+            int ul = glGetUniformLocation(this->program, name.c_str());
+            if (ul == GL_INVALID_OPERATION)
+            {
+                std::cout << name << " : uniform not found" << std::endl;
+            }
+            return ul;
         }
 
         void set(const std::string &uniform, GLfloat value)

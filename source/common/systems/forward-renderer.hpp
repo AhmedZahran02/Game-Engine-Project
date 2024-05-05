@@ -24,7 +24,8 @@ namespace our
         Material *material;
     };
 
-    struct BallCommand : public RenderCommand {
+    struct BallCommand : public RenderCommand
+    {
         bool filled = false;
         float angle;
         glm::vec3 direction;
@@ -52,10 +53,21 @@ namespace our
         Texture2D *colorTarget, *depthTarget;
         TexturedMaterial *postprocessMaterial;
 
+        unsigned int mapWidth, mapHeight;
+
+        unsigned int shadowMapWidth = 0;
+        unsigned int shadowMapHeight = 0;
+        std::vector<GLuint> shadowFrameBuffers;
+        std::vector<TexturedMaterial *> shadowMaterials;
+
+        bool shadowEnabled = false;
+
+        glm::mat4 getVPLightSource(LightComponent *lightComponent);
+
     public:
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).
-        void initialize(glm::ivec2 windowSize, const nlohmann::json &config);
+        void initialize(glm::ivec2 windowSize, const nlohmann::json &config, World *world, unsigned int shadowMapWidth = 1024, unsigned int shadowMapHeight = 1024);
         // Clean up the renderer
         void destroy();
         // This function should be called every frame to draw the given world

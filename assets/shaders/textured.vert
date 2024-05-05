@@ -10,6 +10,7 @@ out Varyings {
 } vs_out;
 
 uniform mat4 transform;
+uniform float alphaThreshold;
 
 void main(){
     //TODO: (Req 7) Change the next line to apply the transformation matrix
